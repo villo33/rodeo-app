@@ -6,6 +6,7 @@ const webpush = require('web-push');
 const app = express();
 
 
+
 // ================= PUSH =================
 const PUBLIC_KEY = 'BJ9e4DSpEVY0_Nq_FJ6py3oGRBKFl7BCh5wunz4q5bDjA87IaJP2vw902IOj4rNllyV0B8ddg52vwrA5gXq0DSw';
 
@@ -66,8 +67,8 @@ app.post('/suscribir', async (req, res) => {
 });
 
 // ================= RUTA PRINCIPAL =================
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
+app.get("/", (req,res)=>{
+  res.redirect("/login.html");
 });
 
 // ================= MANTENIMIENTO =================

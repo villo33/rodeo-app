@@ -276,11 +276,15 @@ function irInicio() {
   window.location.href = "/";
 }
 
-function logout() {
-  localStorage.removeItem('logueado');
-  window.location.href = '/';
-}
+function logout(){
 
+  localStorage.removeItem('logueado');
+
+  localStorage.removeItem('usuario');
+
+  window.location.href =
+  '/login.html';
+}
 </script>
 
 <div class="form">
