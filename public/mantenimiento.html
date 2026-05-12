@@ -219,7 +219,7 @@ tr:hover{
 <body>
 
 <div class="header">
-🛠️ Mantenimiento CASA NOA
+🛠️ Mantenimiento institucion el rodeo
 </div>
 
 <div class="top-bar">
@@ -253,9 +253,9 @@ function logout() {
 
 <div class="form">
 
-  <select id="habitacion">
-    <option value="">Habitación</option>
-  </select>
+  <input type="text"
+id="habitacion"
+placeholder="Área o lugar">
 
   <input type="text"
   id="descripcion"
@@ -281,7 +281,7 @@ function logout() {
 
   <thead>
     <tr>
-      <th>Habitación</th>
+      <th>Área o lugar</th>
       <th>Descripción</th>
       <th>Encargado</th>
       <th>Fecha</th>
@@ -302,32 +302,6 @@ let editandoId = null;
 // 🔹 FORMATO FECHA
 function formatearFecha(fecha) {
   return new Date(fecha).toLocaleDateString();
-}
-
-// 🔹 HABITACIONES
-function cargarHabitaciones() {
-
-  const select =
-  document.getElementById("habitacion");
-
-  const habitaciones = [
-
-    101,102,103,104,105,106,107,
-    201,202,203,204,205,206,207,
-    301,302,303,304,305,306
-
-  ];
-
-  habitaciones.forEach(h => {
-
-    const option =
-    document.createElement("option");
-
-    option.value = h;
-    option.textContent = h;
-
-    select.appendChild(option);
-  });
 }
 
 // 🔹 CARGAR
@@ -439,7 +413,7 @@ async function guardar(){
   document.getElementById('fecha').value;
 
   if(
-    !habitacion ||
+  
     !descripcion ||
     !encargado ||
     !fecha
