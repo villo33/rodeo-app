@@ -486,13 +486,13 @@ if(archivo){
   formData.append('file', archivo);
 
   formData.append(
-    'upload_preset',
-    'TU_UPLOAD_PRESET'
-  );
+  'upload_preset',
+  'institucion'
+);
 
   const cloudRes =
   await fetch(
-    'https://api.cloudinary.com/v1_1/TU_CLOUD_NAME/image/upload',
+      'https://api.cloudinary.com/v1_1/dcyxqnkyv/image/upload',
     {
       method:'POST',
       body:formData
