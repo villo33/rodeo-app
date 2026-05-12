@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>📋 Tareas</title>
+
+<style>
+.descripcion {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body {
+  font-family: Arial;
+  margin: 0;
+  background: linear-gradient(135deg, #1e1e2f, #007BFF);
+  color: #333;
+}
+
+.top-bar {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+button {
+  padding: 8px 12px;
+  margin: 3px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+.btn-inicio { background: #28a745; }
+.btn-hecho { background: #007BFF; }
+.btn-eliminar { background: #dc3545; }
+.btn-guardar { 
+  background: linear-gradient(to right, #0d6efd, #0dcaf0);
+}
+.btn-ver {
+  background: #17a2b8;
+}
+
+.container {
+  width: 80%;
+  margin: auto;
+  margin-top: 80px;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #1e1e2f;
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 180px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #007BFF;
+  color: white;
+}
+
+td, th {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.pendiente {
+  color: orange;
+  font-weight: bold;
+}
+
+.hecho {
+  color: green;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="top-bar">
+  <button class="btn-inicio" onclick="irInicio()">🏠 Inicio</button>
+</div>
+
+<div class="container">
+  <h2>📋 Gestión de Tareas</h2>
+
+  <div class="form">
+    <input id="descripcion" placeholder="Descripción de la tarea">
+    <input id="asignado_por" placeholder="Asignado por">
+    <input type="date" id="fecha">
+    <button class="btn-guardar" onclick="guardar()">💾 Guardar</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tarea</th>
+        <th>Asignado por</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+</div>
+
+<script>
+
+const API = window.location.origin;
+
+function irInicio(){
+  window.location.href = "/";
+}
+
+function verTarea(texto){
+  alert("📋 Tarea:\n\n" + decodeURIComponent(texto));
+}
+
+// 🔥 GUARDAR
+async function guardar(){
+
+  const descripcion = document.getElementById("descripcion").value;
+  const asignado_por = document.getElementById("asignado_por").value;
+  const fecha = document.getElementById("fecha").value;
+
+  if(!descripcion || !asignado_por || !fecha){
+    alert("Completa todos los datos");
+    return;
+  }
+
+  await fetch(`${API}/tareas`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ descripcion, asignado_por, fecha })
+  });
+
+  limpiar();
+  cargar();
+}
+
+// 🔥 COMPLETAR
+async function completar(id){
+
+  const nombre = prompt("¿Quién completó la tarea?");
+
+  if(!nombre) return;
+
+  await fetch(`${API}/tareas/` + id, {
+    method: 'PUT',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ realizado_por: nombre })
+  });
+
+  cargar();
+}
+
+// 🔥 ELIMINAR
+async function eliminar(id){
+  if(!confirm("¿Eliminar tarea?")) return;
+
+  await fetch(`${API}/tareas/` + id, {
+    method: 'DELETE'
+  });
+
+  cargar();
+}
+
+// 🔥 LIMPIAR
+function limpiar(){
+  document.getElementById("descripcion").value = "";
+  document.getElementById("asignado_por").value = "";
+  document.getElementById("fecha").value = "";
+}
+
+// 🔥 CARGAR
+async function cargar(){
+
+  const res = await fetch(`${API}/tareas`);
+  const data = await res.json();
+
+  let html = '';
+
+  if(data.length === 0){
+    html = `<tr><td colspan="5">No hay tareas</td></tr>`;
+  }
+
+  data.forEach(t => {
+    html += `
+      <tr>
+        <td>
+          ${t.descripcion.length > 20 ? t.descripcion.substring(0,20) + '...' : t.descripcion}
+          <br>
+          <button class="btn-ver" onclick="verTarea('${encodeURIComponent(t.descripcion)}')">👁</button>
+        </td>
+
+        <td>${t.asignado_por || ''}</td>
+
+        <td>${t.fecha.split('T')[0]}</td>
+
+        <td class="${t.estado}">
+          ${t.estado}
+          ${t.realizado_por ? `<br><small>👤 ${t.realizado_por}</small>` : ''}
+        </td>
+
+        <td>
+          ${t.estado === 'pendiente' 
+            ? `<button class="btn-hecho" onclick="completar(${t.id})">✔</button>` 
+            : ''}
+
+          <button class="btn-eliminar" onclick="eliminar(${t.id})">❌</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("tabla").innerHTML = html;
+}
+
+cargar();
+
+</script>
+
+</body>
+</html>

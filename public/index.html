@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1e1e2f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>CASA NOA - PANEL PRINCIPAL</title>
+<link rel="icon" href="/logo.png">
+
+<style>
+
+/* 🔥 RESET */
+* {
+    box-sizing: border-box;
+}
+
+/* 🔥 FONDO GENERAL */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1e1e2f, #007BFF);
+    display: flex;
+}
+
+/* 🔥 CONTENEDOR */
+.wrapper {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+}
+
+h1 {
+    margin-bottom: 30px;
+    color: #1e1e2f;
+}
+
+.menu a {
+    display: block;
+    margin: 12px 0;
+    padding: 12px;
+    background: linear-gradient(to right, #007BFF, #0dcaf0);
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+}
+
+.footer {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #777;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px;
+    border: none;
+    background: #007BFF;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+  <div class="container">
+
+    <h1>🏨 CASA NOA</h1>
+
+    <div class="menu">
+      <a href="/inventario.html">📦 Inventario</a>
+      <a href="/mantenimiento.html">🛠️ Mantenimiento</a>
+      <a href="/habitaciones.html">🏨 Habitaciones</a>
+      <a href="/limpieza.html">🧹 Limpieza</a>
+      <a href="/tareas.html">📋 Tareas</a>
+    </div>
+
+    <!-- 🔔 BOTÓN -->
+    <button onclick="activarNotificaciones()">
+      🔔 Activar notificaciones
+    </button>
+
+    <div class="footer">
+      <p>Creado por Ovidio Camaño</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+/* ================= SERVICE WORKER ================= */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/service-worker.js");
+}
+
+/* ================= PUBLIC KEY ================= */
+const PUBLIC_KEY = 'BJ9e4DSpEVY0_Nq_FJ6py3oGRBKFl7BCh5wunz4q5bDjA87IaJP2vw902IOj4rNllyV0B8ddg52vwrA5gXq0DSw';
+
+/* ================= CONVERTIDOR ================= */
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding)
+    .replace(/-/g, '+')
+    .replace(/_/g, '/');
+
+  const rawData = atob(base64);
+  return new Uint8Array([...rawData].map(char => char.charCodeAt(0)));
+}
+/* ================= PWA INSTALL EVENT ================= */
+
+
+/* ================= ACTIVAR NOTIFICACIONES ================= */
+async function activarNotificaciones() {
+
+  const permiso = await Notification.requestPermission();
+
+  if (permiso !== "granted") {
+    alert("Debes permitir notificaciones");
+    return;
+  }
+
+  const registro = await navigator.serviceWorker.ready;
+
+  // 🔥 BORRAR SUSCRIPCIÓN VIEJA (CLAVE)
+  let suscripcion = await registro.pushManager.getSubscription();
+
+  if (suscripcion) {
+    await suscripcion.unsubscribe();
+  }
+
+  // 🔥 CREAR NUEVA LIMPIA
+  suscripcion = await registro.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(PUBLIC_KEY)
+  });
+
+  console.log("SUSCRIPCIÓN NUEVA:", suscripcion);
+
+  await fetch("/suscribir", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(suscripcion)
+  });
+
+  alert("🔔 Notificaciones activadas correctamente");
+}
+</script>
+<!-- 🔥 BOTÓN -->
+<button id="btnInstalar" style="display:none; position:fixed; bottom:20px; right:20px; padding:12px 16px; border-radius:10px; background:#007BFF; color:white; border:none;">
+📲 Instalar App
+</button>
+
+<!-- 🔥 SCRIPT DE INSTALACIÓN -->
+<script>
+
+let deferredPrompt;
+const btn = document.getElementById("btnInstalar");
+
+// 🔥 EVENTO PRINCIPAL
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  btn.style.display = "block";
+});
+
+// 🔥 CLICK INSTALAR
+btn.addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+
+  deferredPrompt.prompt();
+
+  const result = await deferredPrompt.userChoice;
+
+  if (result.outcome === "accepted") {
+    console.log("Instalada");
+  }
+
+  deferredPrompt = null;
+  btn.style.display = "none";
+});
+
+// 🔥 CUANDO YA ESTA INSTALADA
+window.addEventListener("appinstalled", () => {
+  console.log("App instalada correctamente");
+  btn.style.display = "none";
+  deferredPrompt = null;
+});
+
+</script>
+</body>
+</html>
