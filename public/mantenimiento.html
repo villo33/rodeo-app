@@ -206,6 +206,17 @@ tr:hover{
 /* ================= DESCRIPCION ================= */
 .descripcion{
   max-width:250px;
+}
+
+.desc-contenido{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.desc-texto{
+  flex:1;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
@@ -373,13 +384,21 @@ async function cargar() {
       fila.innerHTML = `
         <td>${item.habitacion}</td>
 
-        <td class="descripcion">
-  ${item.descripcion}
+    <td class="descripcion">
 
-  <button class="btn-ver"
-    onclick="verDescripcion(\`${desc}\`)">
-    👁️
-  </button>
+  <div class="desc-contenido">
+
+    <span class="desc-texto">
+      ${item.descripcion}
+    </span>
+
+    <button class="btn-ver"
+      onclick="verDescripcion(\`${desc}\`)">
+      👁️
+    </button>
+
+  </div>
+
 </td>
 
         <td>${item.encargado}</td>
