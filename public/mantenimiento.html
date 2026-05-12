@@ -5,97 +5,212 @@
 <title>🛠️ Mantenimiento</title>
 
 <style>
-.btn-guardar {
-  background: #007BFF;
+
+/* ================= RESET ================= */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-.btn-guardar:hover {
-  background: #0056b3;
-}
-body {
-  font-family: Arial;
-  background: #f4f6f9;
-  margin: 0;
-  text-align: center;
-}
-
-/* 🔹 HEADER */
-.header {
-  background: #1e1e2f;
-  color: white;
-  padding: 15px;
-  font-size: 20px;
+/* ================= BODY ================= */
+body{
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+  background:
+  radial-gradient(circle at top,#00ff6644,#000000 60%),
+  linear-gradient(135deg,#050505,#0d5f2a,#000000);
+  color:white;
+  padding-bottom:40px;
 }
 
-/* 🔹 TOP BAR */
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 20px;
+/* ================= EFECTOS ================= */
+body::before{
+  content:"";
+  position:fixed;
+  width:500px;
+  height:500px;
+  background:#00ff66;
+  filter:blur(180px);
+  opacity:0.1;
+  top:-150px;
+  left:-150px;
+  z-index:-1;
 }
 
-.btn-inicio {
-  background: #28a745;
+body::after{
+  content:"";
+  position:fixed;
+  width:400px;
+  height:400px;
+  background:#7cff00;
+  filter:blur(160px);
+  opacity:0.08;
+  bottom:-120px;
+  right:-120px;
+  z-index:-1;
 }
 
-.btn-logout {
-  background: red;
+/* ================= HEADER ================= */
+.header{
+  background:rgba(10,10,10,0.9);
+  border-bottom:1px solid #00ff66;
+  padding:20px;
+  font-size:28px;
+  text-align:center;
+  font-weight:bold;
+  color:#00ff66;
+  text-shadow:0 0 15px #00ff66;
+  box-shadow:0 0 20px #00ff6644;
 }
 
-button {
-  padding: 8px 15px;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 6px;
+/* ================= TOP BAR ================= */
+.top-bar{
+  display:flex;
+  justify-content:space-between;
+  padding:20px;
+  flex-wrap:wrap;
+  gap:10px;
 }
 
-input, select {
-  padding: 8px;
-  margin: 5px;
-  width: 150px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+/* ================= BOTONES ================= */
+button{
+  padding:12px 18px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  color:black;
+  font-weight:bold;
+  transition:0.3s;
+  box-shadow:0 0 15px #00ff6644;
 }
 
-/* 🔹 FORM */
-.form {
-  margin: 15px;
+button:hover{
+  transform:scale(1.05);
+  box-shadow:
+  0 0 20px #00ff66,
+  0 0 40px #00ff6666;
 }
 
-/* 🔹 TABLA */
-table {
-  margin: auto;
-  margin-top: 20px;
-  border-collapse: collapse;
-  width: 90%;
-  background: white;
+.btn-inicio{
+  background:linear-gradient(45deg,#00ff66,#7cff00);
 }
 
-th {
-  background: #007BFF;
-  color: white;
-  padding: 10px;
+.btn-logout{
+  background:linear-gradient(45deg,#ff3b3b,#ff0000);
+  color:white;
 }
 
-td {
-  padding: 8px;
-  border: 1px solid #ccc;
+.btn-guardar{
+  background:linear-gradient(45deg,#00ff66,#7cff00);
 }
 
-.descripcion {
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.btn-editar{
+  background:linear-gradient(45deg,#ffae00,#ff7300);
+  color:white;
 }
 
-.btn-editar {
-  background: orange;
+.btn-eliminar{
+  background:linear-gradient(45deg,#ff3b3b,#ff0000);
+  color:white;
 }
 
-.btn-eliminar {
-  background: red;
+/* ================= FORM ================= */
+.form{
+  margin:20px auto;
+  width:95%;
+  max-width:1200px;
+  background:rgba(15,15,15,0.9);
+  border:1px solid #00ff66;
+  border-radius:20px;
+  padding:25px;
+  box-shadow:
+  0 0 20px #00ff6633;
+}
+
+/* ================= INPUTS ================= */
+input,
+select{
+  padding:12px;
+  margin:8px;
+  border-radius:12px;
+  border:1px solid #00ff66;
+  background:#111;
+  color:white;
+  width:180px;
+  outline:none;
+}
+
+input:focus,
+select:focus{
+  box-shadow:0 0 10px #00ff66;
+}
+
+/* ================= TABLA ================= */
+.table-container{
+  width:95%;
+  margin:auto;
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+  background:rgba(15,15,15,0.95);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:
+  0 0 20px #00ff6622;
+}
+
+/* ================= TH ================= */
+th{
+  background:linear-gradient(45deg,#00ff66,#0d5f2a);
+  color:black;
+  padding:15px;
+  font-size:15px;
+}
+
+/* ================= TD ================= */
+td{
+  padding:12px;
+  border-bottom:1px solid #222;
+  color:#eee;
+}
+
+/* ================= HOVER FILAS ================= */
+tr:hover{
+  background:#111;
+}
+
+/* ================= DESCRIPCION ================= */
+.descripcion{
+  max-width:250px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+
+  .top-bar{
+    flex-direction:column;
+  }
+
+  input,
+  select{
+    width:100%;
+  }
+
+  .header{
+    font-size:22px;
+  }
+
+  table{
+    font-size:13px;
+  }
 }
 
 </style>
@@ -108,16 +223,23 @@ td {
 </div>
 
 <div class="top-bar">
-  <button class="btn-inicio" onclick="irInicio()">🏠 Inicio</button>
-  <button class="btn-logout" onclick="logout()">🚪 Cerrar sesión</button>
+
+  <button class="btn-inicio" onclick="irInicio()">
+    🏠 Inicio
+  </button>
+
+  <button class="btn-logout" onclick="logout()">
+    🚪 Cerrar sesión
+  </button>
+
 </div>
 
 <script>
 
-// 🔥 API DINÁMICA (IMPORTANTE)
+// 🔥 API DINÁMICA
 const API = window.location.origin;
 
-// 🔥 NAVEGACIÓN CORREGIDA
+// 🔥 NAVEGACIÓN
 function irInicio() {
   window.location.href = "/";
 }
@@ -130,18 +252,33 @@ function logout() {
 </script>
 
 <div class="form">
+
   <select id="habitacion">
     <option value="">Habitación</option>
   </select>
 
-  <input type="text" id="descripcion" placeholder="Descripción">
-  <input type="text" id="encargado" placeholder="Encargado">
-  <input type="date" id="fecha">
+  <input type="text"
+  id="descripcion"
+  placeholder="Descripción">
 
-  <button class="btn-guardar" onclick="guardar()">💾 Guardar</button>
+  <input type="text"
+  id="encargado"
+  placeholder="Encargado">
+
+  <input type="date"
+  id="fecha">
+
+  <button class="btn-guardar"
+  onclick="guardar()">
+    💾 Guardar
+  </button>
+
 </div>
 
+<div class="table-container">
+
 <table>
+
   <thead>
     <tr>
       <th>Habitación</th>
@@ -153,7 +290,10 @@ function logout() {
   </thead>
 
   <tbody id="tabla"></tbody>
+
 </table>
+
+</div>
 
 <script>
 
@@ -166,94 +306,162 @@ function formatearFecha(fecha) {
 
 // 🔹 HABITACIONES
 function cargarHabitaciones() {
-  const select = document.getElementById("habitacion");
+
+  const select =
+  document.getElementById("habitacion");
 
   const habitaciones = [
+
     101,102,103,104,105,106,107,
     201,202,203,204,205,206,207,
     301,302,303,304,305,306
+
   ];
 
   habitaciones.forEach(h => {
-    const option = document.createElement("option");
+
+    const option =
+    document.createElement("option");
+
     option.value = h;
     option.textContent = h;
+
     select.appendChild(option);
   });
 }
 
 // 🔹 CARGAR
 async function cargar() {
+
   try {
 
-    const res = await fetch(`${API}/mantenimiento`);
-    const data = await res.json();
+    const res =
+    await fetch(`${API}/mantenimiento`);
 
-    data.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+    const data =
+    await res.json();
 
-    const tabla = document.getElementById('tabla');
+    data.sort(
+      (a,b)=>
+      new Date(b.fecha) -
+      new Date(a.fecha)
+    );
+
+    const tabla =
+    document.getElementById('tabla');
+
     tabla.innerHTML = '';
 
-    if (data.length === 0) {
-      tabla.innerHTML = `<tr><td colspan="6">Sin datos</td></tr>`;
+    if(data.length === 0){
+
+      tabla.innerHTML =
+      `<tr>
+        <td colspan="5">
+          Sin datos
+        </td>
+      </tr>`;
+
       return;
     }
 
     data.forEach(item => {
 
-      // 🔥 EVITA ERRORES CON COMILLAS
-      const desc = (item.descripcion || '').replace(/'/g, "\\'");
-      const encargado = (item.encargado || '').replace(/'/g, "\\'");
+      const desc =
+      (item.descripcion || '')
+      .replace(/'/g,"\\'");
 
-      const fila = document.createElement('tr');
+      const encargado =
+      (item.encargado || '')
+      .replace(/'/g,"\\'");
+
+      const fila =
+      document.createElement('tr');
 
       fila.innerHTML = `
         <td>${item.habitacion}</td>
-        <td class="descripcion" title="${item.descripcion}">
+
+        <td class="descripcion"
+        title="${item.descripcion}">
           ${item.descripcion}
         </td>
+
         <td>${item.encargado}</td>
-        <td>${formatearFecha(item.fecha)}</td>
+
         <td>
+          ${formatearFecha(item.fecha)}
+        </td>
+
+        <td>
+
           <button class="btn-editar"
-            onclick="editar(${item.id}, '${item.habitacion}', '${desc}', '${encargado}', '${item.fecha}')">
+          onclick="editar(
+            ${item.id},
+            '${item.habitacion}',
+            '${desc}',
+            '${encargado}',
+            '${item.fecha}'
+          )">
             ✏️
           </button>
-          <button class="btn-eliminar" onclick="eliminar(${item.id})">
+
+          <button class="btn-eliminar"
+          onclick="eliminar(${item.id})">
             ❌
           </button>
+
         </td>
       `;
 
       tabla.appendChild(fila);
     });
 
-  } catch (error) {
-    alert("Error cargando datos ❌");
+  } catch(error){
+
+    alert("❌ Error cargando");
+
     console.log(error);
   }
 }
 
 // 🔹 GUARDAR
-async function guardar() {
+async function guardar(){
 
-  const habitacion = document.getElementById('habitacion').value;
-  const descripcion = document.getElementById('descripcion').value;
-  const encargado = document.getElementById('encargado').value;
-  const fecha = document.getElementById('fecha').value;
+  const habitacion =
+  document.getElementById('habitacion').value;
 
-  if (!habitacion || !descripcion || !encargado || !fecha) {
+  const descripcion =
+  document.getElementById('descripcion').value;
+
+  const encargado =
+  document.getElementById('encargado').value;
+
+  const fecha =
+  document.getElementById('fecha').value;
+
+  if(
+    !habitacion ||
+    !descripcion ||
+    !encargado ||
+    !fecha
+  ){
     alert("Completa todos los campos");
     return;
   }
 
-  try {
+  try{
 
-    await fetch(`${API}/mantenimiento`, {
-      method: editandoId ? 'PUT' : 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: editandoId,
+    await fetch(`${API}/mantenimiento`,{
+
+      method:
+      editandoId ? 'PUT' : 'POST',
+
+      headers:{
+        'Content-Type':'application/json'
+      },
+
+      body:JSON.stringify({
+
+        id:editandoId,
         habitacion,
         descripcion,
         encargado,
@@ -262,47 +470,69 @@ async function guardar() {
     });
 
     limpiar();
+
     cargar();
 
-  } catch (error) {
-    alert("Error guardando ❌");
+  }catch(error){
+
+    alert("❌ Error guardando");
   }
 }
 
-// 🔹 EDITAR (MEJORADO)
-function editar(id, habitacion, descripcion, encargado, fecha) {
+// 🔹 EDITAR
+function editar(
+  id,
+  habitacion,
+  descripcion,
+  encargado,
+  fecha
+){
 
-  document.getElementById('habitacion').value = habitacion;
-  document.getElementById('descripcion').value = descripcion;
-  document.getElementById('encargado').value = encargado;
-  document.getElementById('fecha').value = fecha.split('T')[0];
+  document.getElementById('habitacion').value =
+  habitacion;
+
+  document.getElementById('descripcion').value =
+  descripcion;
+
+  document.getElementById('encargado').value =
+  encargado;
+
+  document.getElementById('fecha').value =
+  fecha.split('T')[0];
 
   editandoId = id;
 }
 
 // 🔹 ELIMINAR
-async function eliminar(id) {
+async function eliminar(id){
 
-  if (!confirm("¿Eliminar?")) return;
+  if(!confirm("¿Eliminar?")) return;
 
-  try {
-    await fetch(`${API}/mantenimiento/${id}`, {
-      method: 'DELETE'
-    });
+  try{
+
+    await fetch(
+      `${API}/mantenimiento/${id}`,
+      {
+        method:'DELETE'
+      }
+    );
 
     cargar();
 
-  } catch (error) {
-    alert("Error eliminando ❌");
+  }catch(error){
+
+    alert("❌ Error eliminando");
   }
 }
 
 // 🔹 LIMPIAR
-function limpiar() {
-  document.getElementById('habitacion').value = '';
-  document.getElementById('descripcion').value = '';
-  document.getElementById('encargado').value = '';
-  document.getElementById('fecha').value = '';
+function limpiar(){
+
+  document.getElementById('habitacion').value='';
+  document.getElementById('descripcion').value='';
+  document.getElementById('encargado').value='';
+  document.getElementById('fecha').value='';
+
   editandoId = null;
 }
 

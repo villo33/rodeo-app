@@ -5,105 +5,177 @@
 <title>📋 Tareas</title>
 
 <style>
-.descripcion {
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+
+/* ================= RESET ================= */
+*{
+  box-sizing:border-box;
 }
 
-body {
-  font-family: Arial;
-  margin: 0;
-  background: linear-gradient(135deg, #1e1e2f, #007BFF);
-  color: #333;
+/* ================= BODY ================= */
+body{
+  font-family:Arial,sans-serif;
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,#1e1e2f,#007BFF);
+  color:#333;
+  padding:20px;
 }
 
-.top-bar {
-  position: absolute;
-  top: 15px;
-  left: 15px;
+/* ================= TOP BAR ================= */
+.top-bar{
+  display:flex;
+  justify-content:flex-start;
+  margin-bottom:20px;
 }
 
-button {
-  padding: 8px 12px;
-  margin: 3px;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: 0.3s;
+/* ================= BOTONES ================= */
+button{
+  padding:10px 14px;
+  margin:3px;
+  border:none;
+  color:white;
+  cursor:pointer;
+  border-radius:10px;
+  transition:0.3s;
+  font-weight:bold;
 }
 
-button:hover {
-  transform: scale(1.05);
+button:hover{
+  transform:scale(1.05);
 }
 
-.btn-inicio { background: #28a745; }
-.btn-hecho { background: #007BFF; }
-.btn-eliminar { background: #dc3545; }
-.btn-guardar { 
-  background: linear-gradient(to right, #0d6efd, #0dcaf0);
-}
-.btn-ver {
-  background: #17a2b8;
+.btn-inicio{
+  background:linear-gradient(to right,#28a745,#20c997);
 }
 
-.container {
-  width: 80%;
-  margin: auto;
-  margin-top: 80px;
-  background: white;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+.btn-hecho{
+  background:linear-gradient(to right,#007BFF,#0dcaf0);
 }
 
-h2 {
-  margin-bottom: 20px;
-  color: #1e1e2f;
+.btn-eliminar{
+  background:linear-gradient(to right,#dc3545,#ff6b6b);
 }
 
-.form {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+.btn-guardar{
+  background:linear-gradient(to right,#007BFF,#0dcaf0);
 }
 
-input {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  width: 180px;
+.btn-ver{
+  background:linear-gradient(to right,#17a2b8,#0dcaf0);
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
+/* ================= CONTENEDOR ================= */
+.container{
+  width:95%;
+  max-width:1200px;
+  margin:auto;
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
 }
 
-th {
-  background: #007BFF;
-  color: white;
+/* ================= TITULO ================= */
+h2{
+  margin-top:0;
+  margin-bottom:25px;
+  color:#1e1e2f;
+  text-align:center;
+  font-size:30px;
 }
 
-td, th {
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: center;
+/* ================= FORM ================= */
+.form{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
+  margin-bottom:25px;
 }
 
-.pendiente {
-  color: orange;
-  font-weight: bold;
+input{
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  width:220px;
+  font-size:14px;
+  outline:none;
 }
 
-.hecho {
-  color: green;
-  font-weight: bold;
+input:focus{
+  border-color:#007BFF;
+  box-shadow:0 0 10px rgba(0,123,255,0.3);
 }
+
+/* ================= TABLA ================= */
+table{
+  width:100%;
+  border-collapse:collapse;
+  overflow:hidden;
+  border-radius:15px;
+}
+
+th{
+  background:linear-gradient(to right,#007BFF,#0dcaf0);
+  color:white;
+  padding:14px;
+  font-size:15px;
+}
+
+td{
+  padding:12px;
+  border-bottom:1px solid #eee;
+  text-align:center;
+}
+
+tr:hover{
+  background:#f8fbff;
+}
+
+/* ================= DESCRIPCION ================= */
+.descripcion{
+  max-width:200px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* ================= ESTADOS ================= */
+.pendiente{
+  color:#ff9800;
+  font-weight:bold;
+}
+
+.hecho{
+  color:#28a745;
+  font-weight:bold;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:768px){
+
+  .container{
+    padding:20px;
+  }
+
+  .form{
+    flex-direction:column;
+    align-items:center;
+  }
+
+  input{
+    width:100%;
+  }
+
+  table{
+    font-size:13px;
+  }
+
+  td,th{
+    padding:8px;
+  }
+}
+
 </style>
 </head>
 
@@ -114,13 +186,17 @@ td, th {
 </div>
 
 <div class="container">
+
   <h2>📋 Gestión de Tareas</h2>
 
   <div class="form">
     <input id="descripcion" placeholder="Descripción de la tarea">
     <input id="asignado_por" placeholder="Asignado por">
     <input type="date" id="fecha">
-    <button class="btn-guardar" onclick="guardar()">💾 Guardar</button>
+
+    <button class="btn-guardar" onclick="guardar()">
+      💾 Guardar
+    </button>
   </div>
 
   <table>
@@ -133,8 +209,10 @@ td, th {
         <th>Acciones</th>
       </tr>
     </thead>
+
     <tbody id="tabla"></tbody>
   </table>
+
 </div>
 
 <script>
@@ -152,19 +230,30 @@ function verTarea(texto){
 // 🔥 GUARDAR
 async function guardar(){
 
-  const descripcion = document.getElementById("descripcion").value;
-  const asignado_por = document.getElementById("asignado_por").value;
-  const fecha = document.getElementById("fecha").value;
+  const descripcion =
+    document.getElementById("descripcion").value;
+
+  const asignado_por =
+    document.getElementById("asignado_por").value;
+
+  const fecha =
+    document.getElementById("fecha").value;
 
   if(!descripcion || !asignado_por || !fecha){
     alert("Completa todos los datos");
     return;
   }
 
-  await fetch(`${API}/tareas`, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ descripcion, asignado_por, fecha })
+  await fetch(`${API}/tareas`,{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({
+      descripcion,
+      asignado_por,
+      fecha
+    })
   });
 
   limpiar();
@@ -174,14 +263,19 @@ async function guardar(){
 // 🔥 COMPLETAR
 async function completar(id){
 
-  const nombre = prompt("¿Quién completó la tarea?");
+  const nombre =
+    prompt("¿Quién completó la tarea?");
 
   if(!nombre) return;
 
-  await fetch(`${API}/tareas/` + id, {
-    method: 'PUT',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ realizado_por: nombre })
+  await fetch(`${API}/tareas/` + id,{
+    method:'PUT',
+    headers:{
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify({
+      realizado_por:nombre
+    })
   });
 
   cargar();
@@ -189,10 +283,11 @@ async function completar(id){
 
 // 🔥 ELIMINAR
 async function eliminar(id){
+
   if(!confirm("¿Eliminar tarea?")) return;
 
-  await fetch(`${API}/tareas/` + id, {
-    method: 'DELETE'
+  await fetch(`${API}/tareas/` + id,{
+    method:'DELETE'
   });
 
   cargar();
@@ -200,6 +295,7 @@ async function eliminar(id){
 
 // 🔥 LIMPIAR
 function limpiar(){
+
   document.getElementById("descripcion").value = "";
   document.getElementById("asignado_por").value = "";
   document.getElementById("fecha").value = "";
@@ -208,40 +304,79 @@ function limpiar(){
 // 🔥 CARGAR
 async function cargar(){
 
-  const res = await fetch(`${API}/tareas`);
-  const data = await res.json();
+  const res =
+    await fetch(`${API}/tareas`);
+
+  const data =
+    await res.json();
 
   let html = '';
 
   if(data.length === 0){
-    html = `<tr><td colspan="5">No hay tareas</td></tr>`;
+
+    html = `
+      <tr>
+        <td colspan="5">
+          No hay tareas
+        </td>
+      </tr>
+    `;
   }
 
   data.forEach(t => {
+
     html += `
       <tr>
-        <td>
-          ${t.descripcion.length > 20 ? t.descripcion.substring(0,20) + '...' : t.descripcion}
+
+        <td class="descripcion">
+
+          ${t.descripcion.length > 20
+            ? t.descripcion.substring(0,20) + '...'
+            : t.descripcion}
+
           <br>
-          <button class="btn-ver" onclick="verTarea('${encodeURIComponent(t.descripcion)}')">👁</button>
+
+          <button class="btn-ver"
+            onclick="verTarea('${encodeURIComponent(t.descripcion)}')">
+            👁
+          </button>
+
         </td>
 
-        <td>${t.asignado_por || ''}</td>
+        <td>
+          ${t.asignado_por || ''}
+        </td>
 
-        <td>${t.fecha.split('T')[0]}</td>
+        <td>
+          ${t.fecha.split('T')[0]}
+        </td>
 
         <td class="${t.estado}">
+
           ${t.estado}
-          ${t.realizado_por ? `<br><small>👤 ${t.realizado_por}</small>` : ''}
+
+          ${t.realizado_por
+            ? `<br><small>👤 ${t.realizado_por}</small>`
+            : ''}
+
         </td>
 
         <td>
-          ${t.estado === 'pendiente' 
-            ? `<button class="btn-hecho" onclick="completar(${t.id})">✔</button>` 
+
+          ${t.estado === 'pendiente'
+            ? `<button class="btn-hecho"
+                onclick="completar(${t.id})">
+                ✔
+              </button>`
             : ''}
 
-          <button class="btn-eliminar" onclick="eliminar(${t.id})">❌</button>
+          <button class="btn-eliminar"
+            onclick="eliminar(${t.id})">
+            ❌
+          </button>
+
         </td>
+
       </tr>
     `;
   });
