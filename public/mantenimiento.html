@@ -114,7 +114,15 @@ button:hover{
   background:linear-gradient(45deg,#ff3b3b,#ff0000);
   color:white;
 }
-
+.btn-ver{
+  margin-left:8px;
+  background:#00ff66;
+  border:none;
+  border-radius:8px;
+  padding:5px 8px;
+  cursor:pointer;
+  font-size:12px;
+}
 /* ================= FORM ================= */
 .form{
   margin:20px auto;
@@ -354,10 +362,14 @@ async function cargar() {
       fila.innerHTML = `
         <td>${item.habitacion}</td>
 
-        <td class="descripcion"
-        title="${item.descripcion}">
-          ${item.descripcion}
-        </td>
+        <td class="descripcion">
+  ${item.descripcion}
+
+  <button class="btn-ver"
+    onclick="verDescripcion(\`${desc}\`)">
+    👁️
+  </button>
+</td>
 
         <td>${item.encargado}</td>
 
@@ -513,6 +525,10 @@ function limpiar(){
 // 🔹 INIT
 cargarHabitaciones();
 cargar();
+
+function verDescripcion(texto){
+  alert("📄 Descripción completa:\n\n" + texto);
+}
 
 </script>
 
