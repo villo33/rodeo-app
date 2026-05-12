@@ -3,16 +3,8 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
 const webpush = require('web-push');
-const cloudinary = require("cloudinary").v2;
 const app = express();
 
-/* ================== CONFIGURAR CLOUDINARY ================== */
-
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 // ================= PUSH =================
 const PUBLIC_KEY = 'BJ9e4DSpEVY0_Nq_FJ6py3oGRBKFl7BCh5wunz4q5bDjA87IaJP2vw902IOj4rNllyV0B8ddg52vwrA5gXq0DSw';
