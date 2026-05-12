@@ -10,20 +10,50 @@
 *{
   box-sizing:border-box;
 }
-
 /* ================= RESET ================= */
 *{
+  margin:0;
+  padding:0;
   box-sizing:border-box;
 }
 
 /* ================= BODY ================= */
 body{
   font-family:Arial,sans-serif;
-  margin:0;
   min-height:100vh;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  color:#333;
+  background:
+  radial-gradient(circle at top,#00ff6644,#000000 60%),
+  linear-gradient(135deg,#050505,#0d5f2a,#000000);
+  color:white;
   padding:20px;
+  padding-bottom:40px;
+}
+
+/* ================= EFECTOS ================= */
+body::before{
+  content:"";
+  position:fixed;
+  width:500px;
+  height:500px;
+  background:#00ff66;
+  filter:blur(180px);
+  opacity:0.1;
+  top:-150px;
+  left:-150px;
+  z-index:-1;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  width:400px;
+  height:400px;
+  background:#7cff00;
+  filter:blur(160px);
+  opacity:0.08;
+  bottom:-120px;
+  right:-120px;
+  z-index:-1;
 }
 
 /* ================= TOP BAR ================= */
@@ -35,39 +65,44 @@ body{
 
 /* ================= BOTONES ================= */
 button{
-  padding:10px 14px;
+  padding:12px 16px;
   margin:3px;
   border:none;
-  color:white;
+  color:black;
   cursor:pointer;
   border-radius:12px;
   transition:0.3s;
   font-weight:bold;
-  box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  box-shadow:0 0 15px #00ff6644;
 }
 
 button:hover{
   transform:scale(1.05);
+  box-shadow:
+  0 0 20px #00ff66,
+  0 0 40px #00ff6666;
 }
 
 .btn-inicio{
-  background:linear-gradient(to right,#11998e,#38ef7d);
+  background:linear-gradient(45deg,#00ff66,#7cff00);
 }
 
 .btn-hecho{
-  background:linear-gradient(to right,#11998e,#38ef7d);
+  background:linear-gradient(45deg,#00ff66,#7cff00);
 }
 
 .btn-eliminar{
-  background:linear-gradient(to right,#ff416c,#ff4b2b);
+  background:linear-gradient(45deg,#ff3b3b,#ff0000);
+  color:white;
 }
 
 .btn-guardar{
-  background:linear-gradient(to right,#11998e,#38ef7d);
+  background:linear-gradient(45deg,#00ff66,#7cff00);
 }
 
 .btn-ver{
-  background:linear-gradient(to right,#0ba360,#3cba92);
+  background:linear-gradient(45deg,#00c853,#64dd17);
+  color:black;
 }
 
 /* ================= CONTENEDOR ================= */
@@ -75,20 +110,23 @@ button:hover{
   width:95%;
   max-width:1200px;
   margin:auto;
-  background:rgba(255,255,255,0.97);
+  background:rgba(15,15,15,0.92);
   padding:30px;
   border-radius:22px;
-  box-shadow:0 10px 35px rgba(0,0,0,0.35);
-  backdrop-filter:blur(10px);
+  border:1px solid #00ff66;
+  box-shadow:
+  0 0 25px #00ff6633;
+  backdrop-filter:blur(8px);
 }
 
 /* ================= TITULO ================= */
 h2{
   margin-top:0;
   margin-bottom:25px;
-  color:#14532d;
+  color:#00ff66;
   text-align:center;
   font-size:32px;
+  text-shadow:0 0 12px #00ff66;
 }
 
 /* ================= FORM ================= */
@@ -104,16 +142,22 @@ h2{
 input{
   padding:12px;
   border-radius:12px;
-  border:1px solid #ccc;
+  border:1px solid #00ff66;
+  background:#111;
+  color:white;
   width:220px;
   font-size:14px;
   outline:none;
   transition:0.3s;
 }
 
+input::placeholder{
+  color:#aaa;
+}
+
 input:focus{
-  border-color:#38ef7d;
-  box-shadow:0 0 12px rgba(56,239,125,0.4);
+  border-color:#00ff66;
+  box-shadow:0 0 12px #00ff66;
 }
 
 /* ================= TABLA ================= */
@@ -122,23 +166,27 @@ table{
   border-collapse:collapse;
   overflow:hidden;
   border-radius:18px;
+  background:rgba(10,10,10,0.95);
+  box-shadow:
+  0 0 20px #00ff6622;
 }
 
 th{
-  background:linear-gradient(to right,#11998e,#38ef7d);
-  color:white;
+  background:linear-gradient(45deg,#00ff66,#0d5f2a);
+  color:black;
   padding:14px;
   font-size:15px;
 }
 
 td{
   padding:12px;
-  border-bottom:1px solid #eee;
+  border-bottom:1px solid #222;
   text-align:center;
+  color:#eee;
 }
 
 tr:hover{
-  background:#f2fff7;
+  background:#111;
 }
 
 /* ================= DESCRIPCION ================= */
@@ -151,13 +199,14 @@ tr:hover{
 
 /* ================= ESTADOS ================= */
 .pendiente{
-  color:#ff9800;
+  color:#ffae00;
   font-weight:bold;
 }
 
 .hecho{
-  color:#11998e;
+  color:#00ff66;
   font-weight:bold;
+  text-shadow:0 0 10px #00ff66;
 }
 
 /* ================= RESPONSIVE ================= */
@@ -183,31 +232,7 @@ tr:hover{
   td,th{
     padding:8px;
   }
-}
 
-/* ================= RESPONSIVE ================= */
-@media(max-width:768px){
-
-  .container{
-    padding:20px;
-  }
-
-  .form{
-    flex-direction:column;
-    align-items:center;
-  }
-
-  input{
-    width:100%;
-  }
-
-  table{
-    font-size:13px;
-  }
-
-  td,th{
-    padding:8px;
-  }
 }
 
 </style>
