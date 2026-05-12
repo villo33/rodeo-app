@@ -155,9 +155,14 @@ input::placeholder{
   color:#aaa;
 }
 
-input:focus{
-  border-color:#00ff66;
-  box-shadow:0 0 12px #00ff66;
+/* 🔥 FECHA */
+input[type="date"]{
+  color:white;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator{
+  filter:invert(1);
+  cursor:pointer;
 }
 
 /* ================= TABLA ================= */
@@ -246,7 +251,7 @@ tr:hover{
 
 <div class="container">
 
-  <h2>📋 Gestión de Tareas</h2>
+  <h2>📋 Gestión de Tareas en la institucion </h2>
 
   <div class="form">
     <input id="descripcion" placeholder="Descripción de la tarea">
