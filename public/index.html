@@ -228,6 +228,10 @@ button:hover{
 </button>
 
 <script>
+    
+    app.get("/", (req,res)=>{
+  res.redirect("/login.html");
+});
 
 /* ================= SERVICE WORKER ================= */
 if ("serviceWorker" in navigator) {
