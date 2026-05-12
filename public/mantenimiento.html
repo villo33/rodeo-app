@@ -283,8 +283,8 @@ function logout() {
 
 <div class="form">
 
-  <input type="text"
-id="habitacion"
+<input type="text"
+id="area"
 placeholder="Área o lugar">
 
   <input type="text"
@@ -297,6 +297,10 @@ placeholder="Área o lugar">
 
   <input type="date"
   id="fecha">
+
+  <input type="file"
+id="evidencia"
+accept="image/*">
 
   <button class="btn-guardar"
   onclick="guardar()">
@@ -315,6 +319,7 @@ placeholder="Área o lugar">
       <th>Descripción</th>
       <th>Encargado</th>
       <th>Fecha</th>
+      <th>Evidencia</th>
       <th>Acciones</th>
     </tr>
   </thead>
@@ -382,52 +387,67 @@ async function cargar() {
       document.createElement('tr');
 
       fila.innerHTML = `
-        <td>${item.habitacion}</td>
 
-    <td class="descripcion">
+  <td>${item.area}</td>
 
-  <div class="desc-contenido">
+  <td class="descripcion">
 
-    <span class="desc-texto">
-      ${item.descripcion}
-    </span>
+    <div class="desc-contenido">
 
-    <button class="btn-ver"
-      onclick="verDescripcion(\`${desc}\`)">
-      👁️
+      <span class="desc-texto">
+        ${item.descripcion}
+      </span>
+
+      <button class="btn-ver"
+        onclick="verDescripcion(\`${desc}\`)">
+        👁️
+      </button>
+
+    </div>
+
+  </td>
+
+  <td>${item.encargado}</td>
+
+  <td>
+    ${formatearFecha(item.fecha)}
+  </td>
+
+  <td>
+
+    ${
+      item.evidencia
+      ?
+      `<button class="btn-ver"
+        onclick="window.open('${item.evidencia}')">
+        📷
+      </button>`
+      :
+      'Sin foto'
+    }
+
+  </td>
+
+  <td>
+
+    <button class="btn-editar"
+      onclick="editar(
+        ${item.id},
+        '${item.area}',
+        '${desc}',
+        '${encargado}',
+        '${item.fecha}'
+      )">
+      ✏️
     </button>
 
-  </div>
+    <button class="btn-eliminar"
+      onclick="eliminar(${item.id})">
+      ❌
+    </button>
 
-</td>
-
-        <td>${item.encargado}</td>
-
-        <td>
-          ${formatearFecha(item.fecha)}
-        </td>
-
-        <td>
-
-          <button class="btn-editar"
-          onclick="editar(
-            ${item.id},
-            '${item.habitacion}',
-            '${desc}',
-            '${encargado}',
-            '${item.fecha}'
-          )">
-            ✏️
-          </button>
-
-          <button class="btn-eliminar"
-          onclick="eliminar(${item.id})">
-            ❌
-          </button>
-
-        </td>
-      `;
-
+  </td>
+`;
       tabla.appendChild(fila);
     });
 
@@ -442,8 +462,8 @@ async function cargar() {
 // 🔹 GUARDAR
 async function guardar(){
 
-  const habitacion =
-  document.getElementById('habitacion').value;
+  const area =
+document.getElementById('area').value;
 
   const descripcion =
   document.getElementById('descripcion').value;
@@ -453,6 +473,37 @@ async function guardar(){
 
   const fecha =
   document.getElementById('fecha').value;
+
+  const archivo =
+document.getElementById('evidencia').files[0];
+
+let evidencia = '';
+
+if(archivo){
+
+  const formData = new FormData();
+
+  formData.append('file', archivo);
+
+  formData.append(
+    'upload_preset',
+    'TU_UPLOAD_PRESET'
+  );
+
+  const cloudRes =
+  await fetch(
+    'https://api.cloudinary.com/v1_1/TU_CLOUD_NAME/image/upload',
+    {
+      method:'POST',
+      body:formData
+    }
+  );
+
+  const cloudData =
+  await cloudRes.json();
+
+  evidencia = cloudData.secure_url;
+}
 
   if(
   
@@ -475,14 +526,15 @@ async function guardar(){
         'Content-Type':'application/json'
       },
 
-      body:JSON.stringify({
+     body:JSON.stringify({
 
-        id:editandoId,
-        habitacion,
-        descripcion,
-        encargado,
-        fecha
-      })
+  id:editandoId,
+  area,
+  descripcion,
+  encargado,
+  fecha,
+  evidencia
+})
     });
 
     limpiar();
@@ -498,14 +550,14 @@ async function guardar(){
 // 🔹 EDITAR
 function editar(
   id,
-  habitacion,
+  area,
   descripcion,
   encargado,
   fecha
 ){
 
-  document.getElementById('habitacion').value =
-  habitacion;
+  document.getElementById('area').value =
+  area;
 
   document.getElementById('descripcion').value =
   descripcion;
@@ -518,7 +570,6 @@ function editar(
 
   editandoId = id;
 }
-
 // 🔹 ELIMINAR
 async function eliminar(id){
 
@@ -544,7 +595,7 @@ async function eliminar(id){
 // 🔹 LIMPIAR
 function limpiar(){
 
-  document.getElementById('habitacion').value='';
+  document.getElementById('area').value='';
   document.getElementById('descripcion').value='';
   document.getElementById('encargado').value='';
   document.getElementById('fecha').value='';
@@ -553,7 +604,6 @@ function limpiar(){
 }
 
 // 🔹 INIT
-cargarHabitaciones();
 cargar();
 
 function verDescripcion(texto){

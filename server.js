@@ -3,8 +3,16 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
 const webpush = require('web-push');
-
+const cloudinary = require("cloudinary").v2;
 const app = express();
+
+/* ================== CONFIGURAR CLOUDINARY ================== */
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // ================= PUSH =================
 const PUBLIC_KEY = 'BJ9e4DSpEVY0_Nq_FJ6py3oGRBKFl7BCh5wunz4q5bDjA87IaJP2vw902IOj4rNllyV0B8ddg52vwrA5gXq0DSw';
@@ -74,10 +82,11 @@ app.get('/', (req, res) => {
 
 // OBTENER
 app.get('/mantenimiento', async (req, res) => {
+
   try {
 
     const result = await db.query(
-      'SELECT * FROM mantenimiento ORDER BY id DESC'
+      'SELECT * FROM el_rodeo ORDER BY id DESC'
     );
 
     res.json(result.rows);
@@ -91,20 +100,43 @@ app.get('/mantenimiento', async (req, res) => {
 // CREAR
 app.post('/mantenimiento', async (req, res) => {
 
-  const { habitacion, descripcion, encargado, fecha } = req.body;
+  const {
+    area,
+    descripcion,
+    encargado,
+    fecha,
+    evidencia
+  } = req.body;
 
   try {
 
     await db.query(
-      `INSERT INTO mantenimiento 
-      (habitacion, descripcion, encargado, fecha)
-      VALUES ($1,$2,$3,$4)`,
-      [habitacion, descripcion, encargado, fecha]
+      `
+      INSERT INTO el_rodeo
+      (
+        area,
+        descripcion,
+        encargado,
+        fecha,
+        evidencia
+      )
+
+      VALUES ($1,$2,$3,$4,$5)
+      `,
+      [
+        area,
+        descripcion,
+        encargado,
+        fecha,
+        evidencia
+      ]
     );
 
     res.send('Guardado');
 
   } catch (err) {
+
+    console.log(err);
 
     res.status(500).send(err.message);
   }
@@ -113,23 +145,44 @@ app.post('/mantenimiento', async (req, res) => {
 // ACTUALIZAR
 app.put('/mantenimiento', async (req, res) => {
 
-  const { id, habitacion, descripcion, encargado, fecha } = req.body;
+  const {
+    id,
+    area,
+    descripcion,
+    encargado,
+    fecha,
+    evidencia
+  } = req.body;
 
   try {
 
     await db.query(
-      `UPDATE mantenimiento
-       SET habitacion=$1,
-           descripcion=$2,
-           encargado=$3,
-           fecha=$4
-       WHERE id=$5`,
-      [habitacion, descripcion, encargado, fecha, id]
+      `
+      UPDATE el_rodeo
+      SET
+        area=$1,
+        descripcion=$2,
+        encargado=$3,
+        fecha=$4,
+        evidencia=$5
+
+      WHERE id=$6
+      `,
+      [
+        area,
+        descripcion,
+        encargado,
+        fecha,
+        evidencia,
+        id
+      ]
     );
 
     res.send('Actualizado');
 
   } catch (err) {
+
+    console.log(err);
 
     res.status(500).send(err.message);
   }
@@ -141,9 +194,9 @@ app.delete('/mantenimiento/:id', async (req, res) => {
   try {
 
     await db.query(
-      'DELETE FROM mantenimiento WHERE id=$1',
-      [req.params.id]
-    );
+  'DELETE FROM el_rodeo WHERE id=$1',
+  [req.params.id]
+);
 
     res.send('Eliminado');
 
