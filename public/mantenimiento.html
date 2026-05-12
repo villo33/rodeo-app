@@ -116,12 +116,23 @@ button:hover{
 }
 .btn-ver{
   margin-left:8px;
-  background:#00ff66;
+  background:linear-gradient(45deg,#00ff66,#00c853);
   border:none;
-  border-radius:8px;
-  padding:5px 8px;
+  border-radius:10px;
+  padding:6px 10px;
   cursor:pointer;
-  font-size:12px;
+  font-size:14px;
+  color:black;
+  font-weight:bold;
+  transition:0.3s;
+  box-shadow:0 0 10px #00ff6644;
+}
+
+.btn-ver:hover{
+  transform:scale(1.1);
+  box-shadow:
+  0 0 15px #00ff66,
+  0 0 30px #00ff6666;
 }
 /* ================= FORM ================= */
 .form{
