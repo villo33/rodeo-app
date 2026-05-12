@@ -362,9 +362,9 @@ app.delete('/tareas/:id', async (req, res) => {
   try {
 
     await db.query(
-  'DELETE FROM el_rodeo WHERE id=$1',
-  [req.params.id]
-);
+      'DELETE FROM tareas WHERE id=$1',
+      [req.params.id]
+    );
 
     res.send('Tarea eliminada');
 
