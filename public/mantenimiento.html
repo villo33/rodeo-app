@@ -268,6 +268,37 @@ tr:hover{
 
 // 🔥 API DINÁMICA
 const API = window.location.origin;
+if ("Notification" in window && Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+// 🔥 NOTIFICACIÓN (PEGAR AQUÍ)
+function notificar(titulo, mensaje){
+
+  if (Notification.permission === "granted") {
+    new Notification(titulo, {
+      body: mensaje
+    });
+  }
+
+  const toast = document.createElement("div");
+
+  toast.innerHTML = `<b>${titulo}</b><br>${mensaje}`;
+
+  toast.style.position = "fixed";
+  toast.style.bottom = "20px";
+  toast.style.right = "20px";
+  toast.style.background = "#00ff66";
+  toast.style.color = "black";
+  toast.style.padding = "12px 18px";
+  toast.style.borderRadius = "12px";
+  toast.style.fontWeight = "bold";
+  toast.style.boxShadow = "0 0 15px #00ff66";
+  toast.style.zIndex = "9999";
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => toast.remove(), 3000);
+}
 
 // 🔥 NAVEGACIÓN
 function irInicio() {
@@ -545,6 +576,10 @@ if(archivo){
 
     alert("❌ Error guardando");
   }
+  notificar(
+  "✅ Mantenimiento guardado",
+  `Área: ${area}\nEncargado: ${encargado}`
+);
 }
 
 // 🔹 EDITAR
