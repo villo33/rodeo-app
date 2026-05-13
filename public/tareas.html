@@ -263,11 +263,7 @@ tr:hover{
 id="imagenes"
 accept="image/*"
 multiple>
-<input
-type="file"
-id="evidencia_final"
-accept="image/*"
-multiple>
+
 
     <button class="btn-guardar" onclick="guardar()">
       💾 Guardar
@@ -383,7 +379,7 @@ async function completar(id){
   if(!nombre) return;
 
   const archivos =
-    document.getElementById("evidencia_final").files;
+  document.getElementById(`evidencia_${id}`).files;
 
   let evidencia_final = [];
 
@@ -518,17 +514,22 @@ async function cargar(){
 
         <td>
 
-          ${t.estado === 'pendiente'
-            ? `<button class="btn-hecho"
-                onclick="completar(${t.id})">
-                ✔
-              </button>`
-            : ''}
+         ${t.estado === 'pendiente'
+  ? `
+  <input
+    type="file"
+    id="evidencia_${t.id}"
+    accept="image/*"
+    multiple
+    style="width:150px;font-size:11px;margin-bottom:5px;"
+  >
 
-          <button class="btn-eliminar"
-            onclick="eliminar(${t.id})">
-            ❌
-          </button>
+  <button class="btn-hecho"
+    onclick="completar(${t.id})">
+    ✔
+  </button>
+  `
+  : ''}
 
         </td>
 
@@ -548,16 +549,16 @@ async function cargar(){
 
   <br>
 
-  ${
-    t.evidencia_final?.length
-    ? `
+${
+  t.evidencia_final?.length
+  ? t.evidencia_final.map(img => `
       <button class="btn-ver"
-        onclick="window.open('${t.evidencia_final[0]}')">
-        ✅ Final
+        onclick="window.open('${img}')">
+        ✅ Ver
       </button>
-    `
-    : 'Sin evidencia'
-  }
+    `).join('')
+  : 'Sin evidencia'
+}
 
 </td>
 
