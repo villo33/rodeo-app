@@ -193,24 +193,27 @@ app.put('/mantenimiento', async (req, res) => {
 
   try {
 
+    const evidenciaFinal = Array.isArray(evidencia)
+      ? evidencia
+      : [];
+
     await db.query(
       `
       UPDATE el_rodeo
       SET
-        area=$1,
-        descripcion=$2,
-        encargado=$3,
-        fecha=$4,
-        evidencia=$5
-
-      WHERE id=$6
+        area = $1,
+        descripcion = $2,
+        encargado = $3,
+        fecha = $4,
+        evidencia = $5
+      WHERE id = $6
       `,
       [
         area,
         descripcion,
         encargado,
         fecha,
-        evidencia,
+        JSON.stringify(evidenciaFinal),
         id
       ]
     );
@@ -218,13 +221,10 @@ app.put('/mantenimiento', async (req, res) => {
     res.send('Actualizado');
 
   } catch (err) {
-
-    console.log(err);
-
+    console.log("❌ ERROR PUT:", err);
     res.status(500).send(err.message);
   }
 });
-
 // ELIMINAR
 app.delete('/mantenimiento/:id', async (req, res) => {
 
