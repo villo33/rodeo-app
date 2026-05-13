@@ -143,87 +143,9 @@ app.post('/mantenimiento', async (req, res) => {
 });
 
 
-// CREAR + NOTIFICAR 🔥 (VERSIÓN CORRECTA)
 app.post('/mantenimiento', async (req, res) => {
 
   const {
-    area,
-    descripcion,
-    encargado,
-    fecha,
-    evidencia
-  } = req.body;
-
-  try {
-
-await db.query(
-  `
-  UPDATE el_rodeo
-  SET
-    area = $1,
-    descripcion = $2,
-    encargado = $3,
-    fecha = $4,
-    evidencia = $5
-  WHERE id = $6
-  `,
-  [
-    area,
-    descripcion,
-    encargado,
-    fecha,
-    JSON.stringify(evidencia || []),  // ✅ seguro
-    id
-  ]
-);
-    // 2. 🔥 NOTIFICACIÓN PUSH (IGUAL QUE TAREAS)
-    const payload = JSON.stringify({
-      title: '🛠️ Nuevo mantenimiento',
-      body: `${area} - ${descripcion}`
-    });
-
-    const subs = await db.query(
-      'SELECT * FROM suscripciones'
-    );
-
-    for (const sub of subs.rows) {
-
-      const pushSubscription = {
-        endpoint: sub.endpoint,
-        keys: {
-          p256dh: sub.p256dh,
-          auth: sub.auth
-        }
-      };
-
-      try {
-        await webpush.sendNotification(
-          pushSubscription,
-          payload
-        );
-      } catch (err) {
-
-        if (err.statusCode === 410 || err.statusCode === 404) {
-          await db.query(
-            'DELETE FROM suscripciones WHERE endpoint = $1',
-            [sub.endpoint]
-          );
-        }
-      }
-    }
-
-    res.send('Guardado y notificado');
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).send(err.message);
-  }
-});
-
-app.put('/mantenimiento', async (req, res) => {
-
-  const {
-    id,
     area,
     descripcion,
     encargado,
@@ -237,31 +159,61 @@ app.put('/mantenimiento', async (req, res) => {
       ? evidencia
       : [];
 
+    // 1. GUARDAR
     await db.query(
       `
-      UPDATE el_rodeo
-      SET
-        area = $1,
-        descripcion = $2,
-        encargado = $3,
-        fecha = $4,
-        evidencia = $5
-      WHERE id = $6
+      INSERT INTO el_rodeo
+      (area, descripcion, encargado, fecha, evidencia)
+      VALUES ($1,$2,$3,$4,$5)
       `,
       [
         area,
         descripcion,
         encargado,
         fecha,
-        JSON.stringify(evidenciaFinal),
-        id
+        JSON.stringify(evidenciaFinal)
       ]
     );
 
-    res.send('Actualizado');
+    res.send('Guardado correctamente');
+
+    // 2. NOTIFICACIONES (SIN ROMPER EL SERVER)
+    const payload = JSON.stringify({
+      title: '🛠️ Nuevo mantenimiento',
+      body: `${area} - ${descripcion}`
+    });
+
+    const subs = await db.query('SELECT * FROM suscripciones');
+
+    for (const sub of subs.rows) {
+
+      try {
+
+        await webpush.sendNotification(
+          {
+            endpoint: sub.endpoint,
+            keys: {
+              p256dh: sub.p256dh,
+              auth: sub.auth
+            }
+          },
+          payload
+        );
+
+      } catch (err) {
+        console.log("❌ Push error:", err.statusCode || err.message);
+
+        if (err.statusCode === 410 || err.statusCode === 404) {
+          await db.query(
+            'DELETE FROM suscripciones WHERE endpoint = $1',
+            [sub.endpoint]
+          );
+        }
+      }
+    }
 
   } catch (err) {
-    console.log("❌ ERROR PUT:", err);
+    console.log("❌ ERROR POST:", err);
     res.status(500).send(err.message);
   }
 });
