@@ -209,6 +209,14 @@ app.get('/tareas', async (req, res) => {
     const result = await db.query(
       'SELECT * FROM tareas ORDER BY id DESC'
     );
+    result.rows.forEach(t => {
+
+  t.imagenes =
+    JSON.parse(
+      t.imagenes || '[]'
+    );
+
+});
 
     res.json(result.rows);
 
@@ -221,16 +229,35 @@ app.get('/tareas', async (req, res) => {
 // CREAR + NOTIFICAR
 app.post('/tareas', async (req, res) => {
 
-  const { descripcion, asignado_por, fecha } = req.body;
+  const {
+    descripcion,
+    asignado_por,
+    fecha,
+    imagenes
+  } = req.body;
 
   try {
 
-    await db.query(
-      `INSERT INTO tareas
-      (descripcion, asignado_por, fecha, estado)
-      VALUES ($1,$2,$3,$4)`,
-      [descripcion, asignado_por, fecha, 'pendiente']
-    );
+  await db.query(
+  `INSERT INTO tareas
+  (
+    descripcion,
+    asignado_por,
+    fecha,
+    estado,
+    imagenes
+  )
+
+  VALUES ($1,$2,$3,$4,$5)`,
+
+  [
+    descripcion,
+    asignado_por,
+    fecha,
+    'pendiente',
+    JSON.stringify(imagenes)
+  ]
+);
 
     const payload = JSON.stringify({
       title: '📋 Nueva tarea',

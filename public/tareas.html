@@ -165,6 +165,8 @@ input[type="date"]::-webkit-calendar-picker-indicator{
   cursor:pointer;
 }
 
+
+
 /* ================= TABLA ================= */
 table{
   width:100%;
@@ -257,6 +259,10 @@ tr:hover{
     <input id="descripcion" placeholder="Descripción de la tarea">
     <input id="asignado_por" placeholder="Asignado por">
     <input type="date" id="fecha">
+    <input type="file"
+id="imagenes"
+accept="image/*"
+multiple>
 
     <button class="btn-guardar" onclick="guardar()">
       💾 Guardar
@@ -271,6 +277,7 @@ tr:hover{
         <th>Fecha</th>
         <th>Estado</th>
         <th>Acciones</th>
+        <th>Imágenes</th>
       </tr>
     </thead>
 
@@ -293,7 +300,6 @@ function verTarea(texto){
   alert("📋 Tarea:\n\n" + decodeURIComponent(texto));
 }
 
-// 🔥 GUARDAR
 async function guardar(){
 
   const descripcion =
@@ -305,11 +311,46 @@ async function guardar(){
   const fecha =
     document.getElementById("fecha").value;
 
+  const archivos =
+    document.getElementById("imagenes").files;
+
+  let imagenes = [];
+
   if(!descripcion || !asignado_por || !fecha){
     alert("Completa todos los datos");
     return;
   }
 
+  // 🔥 SUBIR IMÁGENES A CLOUDINARY
+  for(let archivo of archivos){
+
+    const formData = new FormData();
+
+    formData.append('file', archivo);
+
+    formData.append(
+      'upload_preset',
+      'institucion'
+    );
+
+    const cloudRes =
+      await fetch(
+        'https://api.cloudinary.com/v1_1/dcyxqnkyv/image/upload',
+        {
+          method:'POST',
+          body:formData
+        }
+      );
+
+    const cloudData =
+      await cloudRes.json();
+
+    imagenes.push(
+      cloudData.secure_url
+    );
+  }
+
+  // 🔥 GUARDAR EN API
   await fetch(`${API}/tareas`,{
     method:'POST',
     headers:{
@@ -318,11 +359,13 @@ async function guardar(){
     body:JSON.stringify({
       descripcion,
       asignado_por,
-      fecha
+      fecha,
+      imagenes
     })
   });
 
   limpiar();
+
   cargar();
 }
 
@@ -442,6 +485,21 @@ async function cargar(){
           </button>
 
         </td>
+
+        <td>
+
+  ${
+    t.imagenes?.length
+    ? `
+      <button class="btn-ver"
+        onclick="window.open('${t.imagenes[0]}')">
+        📷
+      </button>
+    `
+    : 'Sin imágenes'
+  }
+
+</td>
 
       </tr>
     `;
