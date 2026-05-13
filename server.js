@@ -71,6 +71,25 @@ app.get("/", (req,res)=>{
   res.redirect("/login.html");
 });
 
+// ================= MANTENIMIENTO =================
+
+// OBTENER
+app.get('/mantenimiento', async (req, res) => {
+  try {
+    const result = await db.query(
+      'SELECT * FROM el_rodeo ORDER BY id DESC'
+    );
+
+    res.json(result.rows);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err.message);
+  }
+});
+
+
+// CREAR + NOTIFICAR 🔥 (VERSIÓN CORRECTA)
 app.post('/mantenimiento', async (req, res) => {
 
   const {
@@ -85,17 +104,15 @@ app.post('/mantenimiento', async (req, res) => {
 
     // 1. GUARDAR EN BD
     await db.query(
-      `
-      INSERT INTO el_rodeo
+      `INSERT INTO el_rodeo
       (area, descripcion, encargado, fecha, evidencia)
-      VALUES ($1,$2,$3,$4,$5)
-      `,
+      VALUES ($1,$2,$3,$4,$5)`,
       [area, descripcion, encargado, fecha, evidencia]
     );
 
-    // 2. 🔥 PUSH NOTIFICATION
+    // 2. 🔥 NOTIFICACIÓN PUSH (IGUAL QUE TAREAS)
     const payload = JSON.stringify({
-      title: '🛠️ Mantenimiento nuevo',
+      title: '🛠️ Nuevo mantenimiento',
       body: `${area} - ${descripcion}`
     });
 
@@ -132,7 +149,6 @@ app.post('/mantenimiento', async (req, res) => {
     res.send('Guardado y notificado');
 
   } catch (err) {
-
     console.log(err);
     res.status(500).send(err.message);
   }
