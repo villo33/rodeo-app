@@ -71,26 +71,6 @@ app.get("/", (req,res)=>{
   res.redirect("/login.html");
 });
 
-// ================= MANTENIMIENTO =================
-
-// OBTENER
-app.get('/mantenimiento', async (req, res) => {
-
-  try {
-
-    const result = await db.query(
-      'SELECT * FROM el_rodeo ORDER BY id DESC'
-    );
-
-    res.json(result.rows);
-
-  } catch (err) {
-
-    res.status(500).send(err.message);
-  }
-});
-
-// CREAR
 app.post('/mantenimiento', async (req, res) => {
 
   const {
@@ -103,34 +83,57 @@ app.post('/mantenimiento', async (req, res) => {
 
   try {
 
+    // 1. GUARDAR EN BD
     await db.query(
       `
       INSERT INTO el_rodeo
-      (
-        area,
-        descripcion,
-        encargado,
-        fecha,
-        evidencia
-      )
-
+      (area, descripcion, encargado, fecha, evidencia)
       VALUES ($1,$2,$3,$4,$5)
       `,
-      [
-        area,
-        descripcion,
-        encargado,
-        fecha,
-        evidencia
-      ]
+      [area, descripcion, encargado, fecha, evidencia]
     );
 
-    res.send('Guardado');
+    // 2. 🔥 PUSH NOTIFICATION
+    const payload = JSON.stringify({
+      title: '🛠️ Mantenimiento nuevo',
+      body: `${area} - ${descripcion}`
+    });
+
+    const subs = await db.query(
+      'SELECT * FROM suscripciones'
+    );
+
+    for (const sub of subs.rows) {
+
+      const pushSubscription = {
+        endpoint: sub.endpoint,
+        keys: {
+          p256dh: sub.p256dh,
+          auth: sub.auth
+        }
+      };
+
+      try {
+        await webpush.sendNotification(
+          pushSubscription,
+          payload
+        );
+      } catch (err) {
+
+        if (err.statusCode === 410 || err.statusCode === 404) {
+          await db.query(
+            'DELETE FROM suscripciones WHERE endpoint = $1',
+            [sub.endpoint]
+          );
+        }
+      }
+    }
+
+    res.send('Guardado y notificado');
 
   } catch (err) {
 
     console.log(err);
-
     res.status(500).send(err.message);
   }
 });
