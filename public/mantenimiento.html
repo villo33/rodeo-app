@@ -485,18 +485,16 @@ async function cargar() {
   }
 }
 
-async function guardar(){
+async function guardar() {
 
   const area = document.getElementById('area').value;
   const descripcion = document.getElementById('descripcion').value;
   const encargado = document.getElementById('encargado').value;
   const fecha = document.getElementById('fecha').value;
-
   const archivos = document.getElementById('evidencia').files;
 
   let evidencias = [];
 
-  // 🔥 subir múltiples imágenes
   for (let i = 0; i < archivos.length; i++) {
 
     const formData = new FormData();
@@ -505,10 +503,7 @@ async function guardar(){
 
     const cloudRes = await fetch(
       'https://api.cloudinary.com/v1_1/dcyxqnkyv/image/upload',
-      {
-        method: 'POST',
-        body: formData
-      }
+      { method: 'POST', body: formData }
     );
 
     const cloudData = await cloudRes.json();
@@ -522,23 +517,27 @@ async function guardar(){
 
   try {
 
-    await fetch(`${API}/mantenimiento`, {
-
+    const res = await fetch(`${API}/mantenimiento`, {
       method: editandoId ? 'PUT' : 'POST',
-
       headers: {
         'Content-Type': 'application/json'
       },
-
       body: JSON.stringify({
-        id: editandoId,
+        id: editandoId || undefined,
         area,
         descripcion,
         encargado,
         fecha,
-        evidencia: evidencias   // 🔥 ARRAY REAL
+        evidencia: evidencias
       })
     });
+
+    // 🔥 IMPORTANTE: validar respuesta
+    const text = await res.text();
+
+    if (!res.ok) {
+      throw new Error(text);
+    }
 
     limpiar();
     cargar();
@@ -549,11 +548,10 @@ async function guardar(){
     );
 
   } catch (error) {
-    console.log(error);
-    alert("❌ Error guardando");
+    console.log("ERROR REAL:", error);
+    alert("❌ Error guardando: " + error.message);
   }
 }
-
 // 🔹 EDITAR
 function editar(
   id,
