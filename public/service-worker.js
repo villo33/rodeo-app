@@ -30,8 +30,8 @@ self.addEventListener("push", event => {
 
   const options = {
     body: data.body,
-    icon: "/logo.png",
-    badge: "/logo.png",
+    icon: "/logo-192.png",
+badge: "/logo-192.png",
     vibrate: [200, 100, 200] // 🔥 hace vibrar en celular
   };
 

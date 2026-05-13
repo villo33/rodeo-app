@@ -303,6 +303,7 @@ async function activarNotificaciones(){
             urlBase64ToUint8Array(PUBLIC_KEY)
         });
 
+        // 🔥 ENVIAR LIMPIO AL SERVER
         await fetch("/suscribir",{
 
             method:"POST",
@@ -311,14 +312,26 @@ async function activarNotificaciones(){
                 "Content-Type":"application/json"
             },
 
-            body:JSON.stringify(suscripcion)
+            body:JSON.stringify({
+
+                endpoint: suscripcion.endpoint,
+
+                keys:{
+                    p256dh:
+                    suscripcion.toJSON().keys.p256dh,
+
+                    auth:
+                    suscripcion.toJSON().keys.auth
+                }
+
+            })
         });
 
         alert("✅ Notificaciones activadas");
 
     }catch(error){
 
-        console.log(error);
+        console.log("ERROR PUSH:", error);
 
         alert("❌ Error activando notificaciones");
     }
