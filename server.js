@@ -88,7 +88,7 @@ app.get('/mantenimiento', async (req, res) => {
           ? JSON.parse(item.evidencia)
           : [];
       } catch (e) {
-        item.evidencia = []; // 🔥 si está dañado, no rompe
+        item.evidencia = [];
       }
 
     });
@@ -97,6 +97,47 @@ app.get('/mantenimiento', async (req, res) => {
 
   } catch (err) {
     console.log(err);
+    res.status(500).send(err.message);
+  }
+});
+
+
+// ================= GUARDAR (POST CORRECTO) =================
+app.post('/mantenimiento', async (req, res) => {
+
+  const {
+    area,
+    descripcion,
+    encargado,
+    fecha,
+    evidencia
+  } = req.body;
+
+  try {
+
+    const evidenciaFinal = Array.isArray(evidencia)
+      ? evidencia
+      : [];
+
+    await db.query(
+      `
+      INSERT INTO el_rodeo
+      (area, descripcion, encargado, fecha, evidencia)
+      VALUES ($1,$2,$3,$4,$5)
+      `,
+      [
+        area,
+        descripcion,
+        encargado,
+        fecha,
+        JSON.stringify(evidenciaFinal)
+      ]
+    );
+
+    res.send('Guardado correctamente');
+
+  } catch (err) {
+    console.log("❌ ERROR POST:", err);
     res.status(500).send(err.message);
   }
 });
