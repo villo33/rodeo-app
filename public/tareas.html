@@ -93,15 +93,43 @@ button:hover{
 
 /* ================= FILAS ELEGANTES ================= */
 
+
 tbody tr{
-  border-bottom:1px solid #00ff6644;
   transition:0.3s;
 }
 
-tbody tr:hover{
-  background:#0f0f0f;
-  box-shadow:inset 0 0 20px #00ff6611;
+tbody td{
+  border-bottom:1px solid rgba(0,255,102,0.25);
 }
+
+/* LINEA NEON CENTRAL */
+tbody tr td{
+  position:relative;
+}
+
+tbody tr td::after{
+  content:'';
+  position:absolute;
+  bottom:-1px;
+  left:10%;
+  width:80%;
+  height:1px;
+  background:linear-gradient(
+    to right,
+    transparent,
+    #00ff66,
+    transparent
+  );
+  box-shadow:0 0 8px #00ff66;
+}
+
+/* HOVER */
+tbody tr:hover{
+  background:#101510;
+  box-shadow:inset 0 0 25px #00ff6622;
+  transform:scale(1.002);
+}
+
 
 /* ================= ACCIONES ================= */
 
@@ -225,7 +253,8 @@ input[type="date"]::-webkit-calendar-picker-indicator{
 /* ================= TABLA ================= */
 table{
   width:100%;
-  border-collapse:collapse;
+  border-collapse:separate;
+  border-spacing:0;
   overflow:hidden;
   border-radius:18px;
   background:rgba(10,10,10,0.95);
@@ -241,8 +270,7 @@ th{
 }
 
 td{
-  padding:12px;
-  border-bottom:1px solid #222;
+  padding:18px 12px;
   text-align:center;
   color:#eee;
 }
