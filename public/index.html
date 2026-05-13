@@ -12,6 +12,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
 <title>EL RODEO - PANEL PRINCIPAL</title>
+<!-- 🔐 PROTECCIÓN (AQUÍ ARRIBA DEL TODO) -->
+<script>
+  if (localStorage.getItem("logueado") !== "true") {
+    window.location.href = "/login.html";
+  }
+</script>
 
 <link rel="icon" href="/logo.png">
 
