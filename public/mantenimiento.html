@@ -326,9 +326,7 @@ placeholder="Área o lugar">
   <input type="date"
   id="fecha">
 
-  <input type="file"
-id="evidencia"
-accept="image/*">
+<input type="file" id="evidencia" accept="image/*" multiple>
 
 
 
@@ -490,96 +488,73 @@ async function cargar() {
   }
 }
 
-// 🔹 GUARDAR
 async function guardar(){
 
-  const area =
-document.getElementById('area').value;
+  const area = document.getElementById('area').value;
+  const descripcion = document.getElementById('descripcion').value;
+  const encargado = document.getElementById('encargado').value;
+  const fecha = document.getElementById('fecha').value;
 
-  const descripcion =
-  document.getElementById('descripcion').value;
+  const archivos = document.getElementById('evidencia').files;
 
-  const encargado =
-  document.getElementById('encargado').value;
+  let evidencias = [];
 
-  const fecha =
-  document.getElementById('fecha').value;
+  // 🔥 subir múltiples imágenes
+  for (let i = 0; i < archivos.length; i++) {
 
-  const archivo =
-document.getElementById('evidencia').files[0];
+    const formData = new FormData();
+    formData.append('file', archivos[i]);
+    formData.append('upload_preset', 'institucion');
 
-let evidencia = '';
-
-if(archivo){
-
-  const formData = new FormData();
-
-  formData.append('file', archivo);
-
-  formData.append(
-  'upload_preset',
-  'institucion'
-);
-
-  const cloudRes =
-  await fetch(
+    const cloudRes = await fetch(
       'https://api.cloudinary.com/v1_1/dcyxqnkyv/image/upload',
-    {
-      method:'POST',
-      body:formData
-    }
-  );
+      {
+        method: 'POST',
+        body: formData
+      }
+    );
 
-  const cloudData =
-  await cloudRes.json();
+    const cloudData = await cloudRes.json();
+    evidencias.push(cloudData.secure_url);
+  }
 
-  evidencia = cloudData.secure_url;
-}
-
-  if(
-  
-    !descripcion ||
-    !encargado ||
-    !fecha
-  ){
+  if (!descripcion || !encargado || !fecha) {
     alert("Completa todos los campos");
     return;
   }
 
-  try{
+  try {
 
-    await fetch(`${API}/mantenimiento`,{
+    await fetch(`${API}/mantenimiento`, {
 
-      method:
-      editandoId ? 'PUT' : 'POST',
+      method: editandoId ? 'PUT' : 'POST',
 
-      headers:{
-        'Content-Type':'application/json'
+      headers: {
+        'Content-Type': 'application/json'
       },
 
-     body:JSON.stringify({
-
-  id:editandoId,
-  area,
-  descripcion,
-  encargado,
-  fecha,
-  evidencia
-})
+      body: JSON.stringify({
+        id: editandoId,
+        area,
+        descripcion,
+        encargado,
+        fecha,
+        evidencia: evidencias   // 🔥 ARRAY REAL
+      })
     });
 
     limpiar();
-
     cargar();
 
-  }catch(error){
+    notificar(
+      "✅ Mantenimiento guardado",
+      `Área: ${area}\nEncargado: ${encargado}`
+    );
 
+  } catch (error) {
+    console.log(error);
     alert("❌ Error guardando");
   }
-  notificar(
-  "✅ Mantenimiento guardado",
-  `Área: ${area}\nEncargado: ${encargado}`
-);
 }
 
 // 🔹 EDITAR
