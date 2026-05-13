@@ -76,15 +76,21 @@ app.get("/", (req,res)=>{
 // OBTENER
 app.get('/mantenimiento', async (req, res) => {
   try {
+
     const result = await db.query(
       'SELECT * FROM el_rodeo ORDER BY id DESC'
     );
 
-    // 🔥 CONVERTIR JSON STRING → ARRAY
     result.rows.forEach(item => {
-      item.evidencia = item.evidencia
-        ? JSON.parse(item.evidencia)
-        : [];
+
+      try {
+        item.evidencia = item.evidencia
+          ? JSON.parse(item.evidencia)
+          : [];
+      } catch (e) {
+        item.evidencia = []; // 🔥 si está dañado, no rompe
+      }
+
     });
 
     res.json(result.rows);
