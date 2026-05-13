@@ -179,7 +179,6 @@ await db.query(
   }
 });
 
-// ACTUALIZAR
 app.put('/mantenimiento', async (req, res) => {
 
   const {
