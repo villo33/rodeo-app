@@ -263,6 +263,11 @@ tr:hover{
 id="imagenes"
 accept="image/*"
 multiple>
+<input
+type="file"
+id="evidencia_final"
+accept="image/*"
+multiple>
 
     <button class="btn-guardar" onclick="guardar()">
       💾 Guardar
@@ -377,13 +382,54 @@ async function completar(id){
 
   if(!nombre) return;
 
+  const archivos =
+    document.getElementById("evidencia_final").files;
+
+  let evidencia_final = [];
+
+  // 🔥 SUBIR IMÁGENES
+  for(let archivo of archivos){
+
+    const formData = new FormData();
+
+    formData.append('file', archivo);
+
+    formData.append(
+      'upload_preset',
+      'institucion'
+    );
+
+    const cloudRes =
+      await fetch(
+        'https://api.cloudinary.com/v1_1/dcyxqnkyv/image/upload',
+        {
+          method:'POST',
+          body:formData
+        }
+      );
+
+    const cloudData =
+      await cloudRes.json();
+
+    evidencia_final.push(
+      cloudData.secure_url
+    );
+  }
+
+  // 🔥 ACTUALIZAR
   await fetch(`${API}/tareas/` + id,{
+
     method:'PUT',
+
     headers:{
       'Content-Type':'application/json'
     },
+
     body:JSON.stringify({
-      realizado_por:nombre
+
+      realizado_por:nombre,
+      evidencia_final
+
     })
   });
 
@@ -486,6 +532,7 @@ async function cargar(){
 
         </td>
 
+        
         <td>
 
   ${
@@ -493,10 +540,23 @@ async function cargar(){
     ? `
       <button class="btn-ver"
         onclick="window.open('${t.imagenes[0]}')">
-        📷
+        📷 Inicial
       </button>
     `
-    : 'Sin imágenes'
+    : ''
+  }
+
+  <br>
+
+  ${
+    t.evidencia_final?.length
+    ? `
+      <button class="btn-ver"
+        onclick="window.open('${t.evidencia_final[0]}')">
+        ✅ Final
+      </button>
+    `
+    : 'Sin evidencia'
   }
 
 </td>

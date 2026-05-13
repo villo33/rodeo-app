@@ -209,11 +209,17 @@ app.get('/tareas', async (req, res) => {
     const result = await db.query(
       'SELECT * FROM tareas ORDER BY id DESC'
     );
+   
     result.rows.forEach(t => {
 
   t.imagenes =
     JSON.parse(
       t.imagenes || '[]'
+    );
+
+  t.evidencia_final =
+    JSON.parse(
+      t.evidencia_final || '[]'
     );
 
 });
@@ -319,15 +325,26 @@ app.put('/tareas/:id', async (req, res) => {
 
     const id = req.params.id;
 
-    const { realizado_por } = req.body;
+    const {
+      realizado_por,
+      evidencia_final
+    } = req.body;
 
     const result = await db.query(
+
       `UPDATE tareas
-       SET estado='hecho',
-           realizado_por=$1
-       WHERE id=$2
+       SET
+         estado='hecho',
+         realizado_por=$1,
+         evidencia_final=$2
+       WHERE id=$3
        RETURNING *`,
-      [realizado_por, id]
+
+      [
+        realizado_por,
+        JSON.stringify(evidencia_final),
+        id
+      ]
     );
 
     const tarea = result.rows[0];
