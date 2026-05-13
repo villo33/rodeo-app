@@ -155,11 +155,6 @@ app.post('/mantenimiento', async (req, res) => {
 
   try {
 
-    const evidenciaFinal = Array.isArray(evidencia)
-      ? evidencia
-      : [];
-
-    // 1. GUARDAR
     await db.query(
       `
       INSERT INTO el_rodeo
@@ -171,13 +166,11 @@ app.post('/mantenimiento', async (req, res) => {
         descripcion,
         encargado,
         fecha,
-        JSON.stringify(evidenciaFinal)
+        JSON.stringify(evidencia || [])
       ]
     );
 
-    res.send('Guardado correctamente');
-
-    // 2. NOTIFICACIONES (SIN ROMPER EL SERVER)
+    // 🔥 NOTIFICACIÓN
     const payload = JSON.stringify({
       title: '🛠️ Nuevo mantenimiento',
       body: `${area} - ${descripcion}`
@@ -187,22 +180,17 @@ app.post('/mantenimiento', async (req, res) => {
 
     for (const sub of subs.rows) {
 
+      const pushSubscription = {
+        endpoint: sub.endpoint,
+        keys: {
+          p256dh: sub.p256dh,
+          auth: sub.auth
+        }
+      };
+
       try {
-
-        await webpush.sendNotification(
-          {
-            endpoint: sub.endpoint,
-            keys: {
-              p256dh: sub.p256dh,
-              auth: sub.auth
-            }
-          },
-          payload
-        );
-
+        await webpush.sendNotification(pushSubscription, payload);
       } catch (err) {
-        console.log("❌ Push error:", err.statusCode || err.message);
-
         if (err.statusCode === 410 || err.statusCode === 404) {
           await db.query(
             'DELETE FROM suscripciones WHERE endpoint = $1',
@@ -211,6 +199,8 @@ app.post('/mantenimiento', async (req, res) => {
         }
       }
     }
+
+    res.send('Guardado y notificado');
 
   } catch (err) {
     console.log("❌ ERROR POST:", err);
