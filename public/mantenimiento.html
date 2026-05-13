@@ -260,9 +260,6 @@ tr:hover{
     🏠 Inicio
   </button>
 
-  <button class="btn-logout" onclick="logout()">
-    🚪 Cerrar sesión
-  </button>
 
 </div>
 
@@ -277,16 +274,7 @@ function irInicio() {
   window.location.href = "/";
 }
 
-function logout(){
 
-  localStorage.removeItem('logueado');
-  localStorage.removeItem('usuario');
-
-  alert("Sesión cerrada");
-
-  // opcional: recargar la página
-  location.reload();
-}
 
 </script>
 
