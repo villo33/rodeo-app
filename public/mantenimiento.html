@@ -280,12 +280,14 @@ function irInicio() {
 function logout(){
 
   localStorage.removeItem('logueado');
-
   localStorage.removeItem('usuario');
 
-  window.location.href =
-  '/login.html';
+  alert("Sesión cerrada");
+
+  // opcional: recargar la página
+  location.reload();
 }
+
 </script>
 
 <div class="form">
