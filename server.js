@@ -80,6 +80,13 @@ app.get('/mantenimiento', async (req, res) => {
       'SELECT * FROM el_rodeo ORDER BY id DESC'
     );
 
+    // 🔥 CONVERTIR JSON STRING → ARRAY
+    result.rows.forEach(item => {
+      item.evidencia = item.evidencia
+        ? JSON.parse(item.evidencia)
+        : [];
+    });
+
     res.json(result.rows);
 
   } catch (err) {
@@ -102,14 +109,26 @@ app.post('/mantenimiento', async (req, res) => {
 
   try {
 
-    // 1. GUARDAR EN BD
-    await db.query(
-      `INSERT INTO el_rodeo
-      (area, descripcion, encargado, fecha, evidencia)
-      VALUES ($1,$2,$3,$4,$5)`,
-      [area, descripcion, encargado, fecha, evidencia]
-    );
-
+await db.query(
+  `
+  UPDATE el_rodeo
+  SET
+    area = $1,
+    descripcion = $2,
+    encargado = $3,
+    fecha = $4,
+    evidencia = $5
+  WHERE id = $6
+  `,
+  [
+    area,
+    descripcion,
+    encargado,
+    fecha,
+    JSON.stringify(evidencia || []),  // ✅ seguro
+    id
+  ]
+);
     // 2. 🔥 NOTIFICACIÓN PUSH (IGUAL QUE TAREAS)
     const payload = JSON.stringify({
       title: '🛠️ Nuevo mantenimiento',

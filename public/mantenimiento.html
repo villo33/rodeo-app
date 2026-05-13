@@ -442,20 +442,17 @@ async function cargar() {
     ${formatearFecha(item.fecha)}
   </td>
 
-  <td>
-
-    ${
-      item.evidencia
-      ?
-      `<button class="btn-ver"
-        onclick="window.open('${item.evidencia}')">
-        📷
-      </button>`
-      :
-      'Sin foto'
-    }
-
-  </td>
+ <td>
+  ${
+    item.evidencia && item.evidencia.length > 0
+    ? item.evidencia.map(url => `
+        <img src="${url}"
+             style="width:50px;height:50px;border-radius:6px;margin:2px;cursor:pointer"
+             onclick="window.open('${url}')">
+      `).join('')
+    : 'Sin foto'
+  }
+</td>
 
   <td>
 
