@@ -325,6 +325,11 @@ tr:hover{
 
 }
 
+td{
+  vertical-align:middle;
+}
+
+
 </style>
 </head>
 
@@ -545,7 +550,7 @@ async function editar(id,descripcion,asignado,fecha){
 
   if(!nuevaFecha) return;
 
-  await fetch(`${API}//tareas`,{
+  await fetch(`${API}/tareas`,{
     method:'PUT',
     headers:{
       'Content-Type':'application/json'
@@ -593,41 +598,43 @@ async function cargar(){
 
   data.forEach(t => {
 
-    html += `
-      <tr>
+   html += `
+<tr>
 
-        <td class="descripcion">
+<td class="descripcion">
 
-          ${t.descripcion.length > 20
-            ? t.descripcion.substring(0,20) + '...'
-            : t.descripcion}
+  ${t.descripcion.length > 20
+    ? t.descripcion.substring(0,20) + '...'
+    : t.descripcion}
 
-          <br>
+  <br><br>
 
-          <button class="btn-Tarea completada"
-            onclick="verTarea('${encodeURIComponent(t.descripcion)}')">
-            👁
-          </button>
+  <button class="btn-ver"
+    onclick="verTarea('${encodeURIComponent(t.descripcion)}')">
+    📋 Ver tarea
+  </button>
 
-        </td>
+</td>
 
-        <td>
-          ${t.asignado_por || ''}
-        </td>
+<td>
+  ${t.asignado_por || ''}
+</td>
 
-        <td>
-          ${t.fecha.split('T')[0]}
-        </td>
+<td>
+  ${t.fecha.split('T')[0]}
+</td>
 
-        <td class="${t.estado}">
+<td class="${t.estado}">
 
-          ${t.estado}
+  ${t.estado}
 
-          ${t.realizado_por
-            ? `<br><small>👤 ${t.realizado_por}</small>`
-            : ''}
+  ${t.realizado_por
+    ? `<br><small>👤 ${t.realizado_por}</small>`
+    : ''}
 
-        </td>
+</td>
+
+<td>
 
 <div class="acciones">
 
@@ -652,7 +659,7 @@ ${t.estado === 'pendiente'
 <button
   class="btn-hecho"
   onclick="completar(${t.id})">
-  ✔
+  ✔ Completar
 </button>
 `
 : ''}
@@ -678,7 +685,7 @@ ${t.estado === 'pendiente'
 
 </td>
 
- <td>
+<td>
 
 <div class="imagenes-box">
 
@@ -698,7 +705,7 @@ ${
   ? t.evidencia_final.map(img => `
       <button class="btn-ver"
         onclick="window.open('${img}')">
-        ✅ Ver
+        ✅ Evidencia
       </button>
     `).join('')
   : '<small>Sin evidencia</small>'
@@ -708,8 +715,8 @@ ${
 
 </td>
 
-      </tr>
-    `;
+</tr>
+`;
   });
 
   document.getElementById("tabla").innerHTML = html;
