@@ -420,6 +420,45 @@ app.delete('/tareas/:id', async (req, res) => {
   }
 });
 
+// EDITAR TAREA
+app.put('/tareas', async (req, res) => {
+
+  try {
+
+    const {
+      id,
+      descripcion,
+      asignado_por,
+      fecha
+    } = req.body;
+
+    await db.query(
+
+      `UPDATE tareas
+       SET
+         descripcion=$1,
+         asignado_por=$2,
+         fecha=$3
+       WHERE id=$4`,
+
+      [
+        descripcion,
+        asignado_por,
+        fecha,
+        id
+      ]
+    );
+
+    res.send('Tarea actualizada');
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).send(err.message);
+  }
+});
+
 // ================= SERVER =================
 const PORT = process.env.PORT || 3000;
 
